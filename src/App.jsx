@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import Login from "./components/Login";
+import Login from "./components/auth/Login";
 import { Route, Routes, useLocation } from "react-router-dom";
-import Navbar from "./components/Navbar";
+import Navbar from "./components/common/Navbar";
 
 function App() {
-  return <div className="">
-    <Navbar />
+  const [isAuth, setIsAuth] = useState(false);
+  return (
     <div className="">
-
-    <Login/>
+      {isAuth && <Navbar setIsAuth={setIsAuth} />}
+      <div className="">
+        <Login setIsAuth={setIsAuth} />
+      </div>
     </div>
-  </div>;
+  );
 }
 
 export default App;

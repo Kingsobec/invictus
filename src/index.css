@@ -46,3 +46,11 @@ body {
 .filtered {
   filter: blur(5px);
 }
+
+.rxbg{
+  background-image: url(./assets/rxbg.jpg);
+  background-position: center;
+  background-size: contain;
+  background-repeat: repeat;
+  
+}
