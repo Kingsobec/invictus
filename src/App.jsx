@@ -3,14 +3,36 @@ import React from "react";
 import Login from "./components/auth/Login";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
-
+import Dashboard from "./components/dashboard/Dashboard";
+import ExamList from "./components/dashboard/ExamList";
+import Cbt from "./components/cbt/Cbt";
 function App() {
+  const [userData, setUserData] = useState([]);
   const [isAuth, setIsAuth] = useState(false);
+  useEffect(() => {
+    const storedIsAuth = localStorage.getItem("isAuth");
+    const storedUserData = localStorage.getItem("userData")
+    setUserData(storedUserData)
+    setIsAuth(storedIsAuth === "true");
+    console.log(isAuth);
+  }, []);
   return (
     <div className="">
-      {isAuth && <Navbar setIsAuth={setIsAuth} />}
+      <Navbar setIsAuth={setIsAuth} userData={userData} isAuth={isAuth} />
       <div className="">
-        <Login setIsAuth={setIsAuth} />
+        <Routes>
+          <Route
+            path="/"
+            element={<Dashboard isAuth={isAuth} setIsAuth={setIsAuth} userData={userData} />}
+          />
+          <Route path="/quiz" element={<ExamList />} />
+          <Route path="/cbt-mode" element={<Cbt />} />
+
+          <Route
+            path="/login"
+            element={<Login setIsAuth={setIsAuth} setUserData={setUserData} isAuth={isAuth} />}
+          />
+        </Routes>
       </div>
     </div>
   );

@@ -1,8 +1,8 @@
 import { useRef, useState, useTransition } from "react";
-import { auth, provider, db, storageRef } from "../../firebase-config";
+import { db, storageRef, auth } from "../../firebase-config";
 import { useNavigate } from "react-router-dom";
 import {
-  getAuth,
+  // getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
@@ -10,7 +10,8 @@ import {
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const Login = () => {
+const Login = ({ setIsAuth, setUserData, isAuth }) => {
+  // console.log(isAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   // const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -20,7 +21,10 @@ const Login = () => {
   const [regNumber, setRegNumber] = useState("");
   const [profilePics, setProfilePics] = useState(null);
   const [profilePicsURL, setProfilePicsURL] = useState("");
+  // const auth = getAuth();
 
+
+  const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const handleImageChange = async () => {
     if (!profilePics) return;
@@ -34,8 +38,7 @@ const Login = () => {
       alert(error);
     }
   };
-  console.log(profilePicsURL);
-  const auth = getAuth();
+  // console.log(profilePicsURL);
 
   const createAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
@@ -55,7 +58,7 @@ const Login = () => {
       });
   };
   const registerUser = () => {
-    console.log(profilePicsURL);
+    // console.log(profilePicsURL);
     updateProfile(auth.currentUser, {
       displayName: username,
       regNumber: regNumber,
@@ -64,6 +67,7 @@ const Login = () => {
     })
       .then(() => {
         alert("registration successful");
+
         // Profile updated!
         // ...
       })
@@ -78,7 +82,11 @@ const Login = () => {
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
+        setUserData(user);
+        localStorage.setItem("userData", user)
+        setIsAuth(true);
+        localStorage.setItem("isAuth", "true");
+        navigate("/");
         // ...
       })
       .catch((error) => {
@@ -87,11 +95,7 @@ const Login = () => {
         alert(errorMessage);
       });
   };
-  const signUserOut = () => {
-    signOut(auth).then(() => {
-      localStorage.clear();
-    });
-  };
+
 
   return (
     <div className="flex justify-center items-center min-h-[100vh] text-center rxbg">
@@ -278,6 +282,7 @@ const Login = () => {
               className=" py-1 px-2 bg-green-600 rounded-md trans text-white hover:scale-110 font-semibold"
               onClick={() => {
                 registerUser();
+                signIn();
               }}
             >
               REGISTER
