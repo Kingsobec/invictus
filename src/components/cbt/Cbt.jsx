@@ -6,7 +6,6 @@ const Cbt = () => {
   const [answered, setAnswered] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState(50);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);
-  const [selectedOption, setSelectedOption] = useState("");
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);
   const [showResult, setShowResult] = useState(false);
@@ -26,7 +25,7 @@ const Cbt = () => {
 
   const submit = () => {
     if (showResult) {
-      return
+      return;
     }
     const correctAnswers = questions.filter(
       (question) => question.answer == question.picked
@@ -37,7 +36,7 @@ const Cbt = () => {
 
   const handleOptionChange = (index, num) => {
     if (showResult) {
-      return
+      return;
     }
     const questionUpdate = questions.map((each, i) => {
       if (i === questionToDisplay) {
@@ -650,11 +649,11 @@ const Cbt = () => {
           showScore && "filtered"
         }`}
       >
-
         <div className=" max-w-[1200px]">
           <div className="flex justify-between md:text-[1.5rem] text-[1.3rem] font-bold ">
             <p className="">PCH232: {questionToDisplay + 1}</p>
-            {showResult ? "Score" : "Answered"}: {!showResult? answered : score} / {totalQuestion}
+            {showResult ? "Score" : "Answered"}:{" "}
+            {!showResult ? answered : score} / {totalQuestion}
           </div>
           <div className="lg:hidden">
             {!showResult && (
@@ -683,7 +682,12 @@ const Cbt = () => {
                   >
                     <span
                       className={` mr-1 p-1 border-2 border-black rounded-full w-4 h-4 ${
-                        each.picked === 1 ? " bg-green-700" : " bg-none"
+                        each.picked === 1 && !showResult && " bg-green-700"
+                      } ${showResult && each.answer === 1 && "bg-green-900"} ${
+                        showResult &&
+                        each.picked === 1 &&
+                        each.answer !== 1 &&
+                        "bg-red-700"
                       }`}
                     ></span>{" "}
                     {each.optionA}
@@ -696,7 +700,12 @@ const Cbt = () => {
                   >
                     <span
                       className={` mr-1 p-1 border-2 border-black rounded-full w-4 h-4 ${
-                        each.picked === 2 ? " bg-green-700" : " bg-none"
+                        each.picked === 2 && !showResult && " bg-green-700"
+                      } ${showResult && each.answer === 2 && "bg-green-900"} ${
+                        showResult &&
+                        each.picked === 2 &&
+                        each.answer !== 2 &&
+                        "bg-red-700"
                       }`}
                     ></span>{" "}
                     {each.optionB}
@@ -709,7 +718,12 @@ const Cbt = () => {
                   >
                     <span
                       className={` mr-1 p-1 border-2 border-black rounded-full w-4 h-4 ${
-                        each.picked === 3 ? " bg-green-700" : " bg-none"
+                        each.picked === 3 && !showResult && " bg-green-700"
+                      } ${showResult && each.answer === 3 && "bg-green-900"} ${
+                        showResult &&
+                        each.picked === 3 &&
+                        each.answer !== 3 &&
+                        "bg-red-700"
                       }`}
                     ></span>{" "}
                     {each.optionC}
@@ -722,7 +736,12 @@ const Cbt = () => {
                   >
                     <span
                       className={` mr-1 p-1 border-2 border-black rounded-full w-4 h-4 ${
-                        each.picked === 4 ? " bg-green-700" : " bg-none"
+                        each.picked === 4 && !showResult && " bg-green-700"
+                      } ${showResult && each.answer === 4 && "bg-green-900"} ${
+                        showResult &&
+                        each.picked === 4 &&
+                        each.answer !== 4 &&
+                        "bg-red-700"
                       }`}
                     ></span>{" "}
                     {each.optionD}

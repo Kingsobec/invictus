@@ -1,4 +1,4 @@
-import { useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { db, storageRef, auth } from "../../firebase-config";
 import { useNavigate } from "react-router-dom";
 import {
@@ -11,20 +11,21 @@ import {
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const Login = ({ setIsAuth, setUserData, isAuth }) => {
-  // console.log(isAuth);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const [passwordConfirm, setPasswordConfirm] = useState("");
   const [register, setRegister] = useState(false);
   const [fullName, setFullName] = useState("");
   const [username, setUserName] = useState("");
   const [regNumber, setRegNumber] = useState("");
   const [profilePics, setProfilePics] = useState(null);
   const [profilePicsURL, setProfilePicsURL] = useState("");
-  // const auth = getAuth();
-
 
   const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuth) {
+      navigate("/")
+    }
+  }, [])
   const fileInputRef = useRef(null);
   const handleImageChange = async () => {
     if (!profilePics) return;
@@ -38,17 +39,16 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
       alert(error);
     }
   };
-  // console.log(profilePicsURL);
+  useEffect(() => {
+    handleImageChange();
+  }, [profilePics]);
 
   const createAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         setRegister(true);
-        const user = userCredential.user;
-        // console.log(user);
+        // const user = userCredential.user;
         alert("Account created successfully");
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -58,7 +58,10 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
       });
   };
   const registerUser = () => {
-    // console.log(profilePicsURL);
+    if (!username || !regNumber || !fullName || !profilePicsURL) {
+      alert("Please fill all data and wait for the pics to be uploaded");
+      return;
+    }
     updateProfile(auth.currentUser, {
       displayName: username,
       regNumber: regNumber,
@@ -67,27 +70,21 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
     })
       .then(() => {
         alert("registration successful");
-
-        // Profile updated!
-        // ...
+        setRegister(false);
       })
       .catch((error) => {
         alert(error);
-        // An error occurred
-        // ...
       });
   };
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
+        // localStorage.setItem("userData", JSON.stringify(user));
         setUserData(user);
-        localStorage.setItem("userData", user)
         setIsAuth(true);
         localStorage.setItem("isAuth", "true");
         navigate("/");
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -95,7 +92,6 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
         alert(errorMessage);
       });
   };
-
 
   return (
     <div className="flex justify-center items-center min-h-[100vh] text-center rxbg">
@@ -162,48 +158,6 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
           </p>
 
           <div className=" flex flex-col">
-            {/* <label
-              htmlFor="email"
-              className=" text-[1rem] text-green-900 font-semibold"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={email}
-              placeholder="email"
-              className="p-1 text-[1.2rem] rounded bg-white border border-green-900"
-            />
-            <label
-              htmlFor="password"
-              className="mt-2 text-[1rem] text-green-900 font-semibold"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              className="p-1 text-[1.2rem] rounded border border-green-900"
-              value={password}
-              placeholder="password"
-            />
-            <label
-              htmlFor="passwordConfirm"
-              className="mt-2 text-[1rem] text-green-900 font-semibold"
-            >
-              Confirm password
-            </label>
-            <input
-              type="password"
-              name="passwordConfirm"
-              className={`p-1 text-[1.2rem] rounded border border-green-900 trans ${
-                passwordConfirm !== password && "text-[#f00]"
-              }`}
-              value={passwordConfirm}
-              placeholder="password"
-              onChange={(e) => setPasswordConfirm(e.target.value)}
-            /> */}
             <label
               htmlFor="fullName"
               className="mt-2 text-[1rem] text-green-900 font-semibold"
@@ -282,7 +236,6 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
               className=" py-1 px-2 bg-green-600 rounded-md trans text-white hover:scale-110 font-semibold"
               onClick={() => {
                 registerUser();
-                signIn();
               }}
             >
               REGISTER
