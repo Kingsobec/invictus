@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Cbt = () => {
-  const [time, setTime] = useState(1200);
+  const [time, setTime] = useState(10);
   const [answered, setAnswered] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState(50);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);

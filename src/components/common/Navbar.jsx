@@ -4,10 +4,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../../firebase-config";
 import { useNavigate } from "react-router-dom";
 
-const Navbar = ({ userData, isAuth, cbtMode }) => {
-  if (isAuth === false) {
-    return;
-  }
+const Navbar = ({ userData, isAuth, cbtMode, setIsAuth }) => {
   const nickname = userData.displayName;
   const displayPhoto = userData.photoURL;
   const navigate = useNavigate();
@@ -16,9 +13,10 @@ const Navbar = ({ userData, isAuth, cbtMode }) => {
     signOut(auth).then(() => {
       localStorage.clear();
       navigate("/login");
+      setIsAuth(false)
     });
   };
-  signUserOut()
+  // signUserOut()
   return (
     <>
       {isAuth && (

@@ -25,7 +25,7 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
     if (isAuth) {
       navigate("/")
     }
-  }, [])
+  }, [isAuth])
   const fileInputRef = useRef(null);
   const handleImageChange = async () => {
     if (!profilePics) return;
@@ -80,7 +80,8 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-        // localStorage.setItem("userData", JSON.stringify(user));
+        // console.log(JSON.stringify(user));
+        localStorage.setItem("userData", JSON.stringify(user));
         setUserData(user);
         setIsAuth(true);
         localStorage.setItem("isAuth", "true");
@@ -138,6 +139,7 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
 
           <div className="flex flex-col justify-center items-center gap-2">
             <button
+              type="submit"
               className=" py-1 px-2 bg-green-600 rounded-md trans text-white hover:scale-110 font-semibold"
               onClick={signIn}
             >

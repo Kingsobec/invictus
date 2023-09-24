@@ -9,20 +9,18 @@ import Cbt from "./components/cbt/Cbt";
 function App() {
   const [userData, setUserData] = useState(null);
   const [isAuth, setIsAuth] = useState(false);
-  const [cbtMode, setCbtMode] = useState(false)
+  const [cbtMode, setCbtMode] = useState(false);
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
-    const storedUserData = localStorage.getItem("userData")
+    const storedUserData = localStorage.getItem("userData");
+    // console.log(JSON.parse(storedUserData));
     setIsAuth(storedIsAuth === "true");
-    // console.log(isAuth);
-    console.log(userData)
-    if (userData && isAuth) {
     setUserData(JSON.parse(storedUserData));
-    }
+    // console.log(userData);
   }, [isAuth]);
   return (
     <div className="">
-      {isAuth && userData && (
+      {isAuth && (
         <Navbar setIsAuth={setIsAuth} userData={userData} isAuth={isAuth} />
       )}
       <div className="">
