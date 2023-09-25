@@ -7,21 +7,24 @@ import Dashboard from "./components/dashboard/Dashboard";
 import ExamList from "./components/dashboard/ExamList";
 import Cbt from "./components/cbt/Cbt";
 function App() {
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState(JSON.parse(localStorage.getItem('userData')));
   const [isAuth, setIsAuth] = useState(false);
   const [cbtMode, setCbtMode] = useState(false);
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
-    const storedUserData = localStorage.getItem("userData");
-    // console.log(JSON.parse(storedUserData));
+    // const storedUserData = localStorage.getItem("userData");
     setIsAuth(storedIsAuth === "true");
-    setUserData(JSON.parse(storedUserData));
-    // console.log(userData);
-  }, [isAuth]);
+    // setUserData(JSON.parse(storedUserData));
+  }, []);
   return (
     <div className="">
-      {isAuth && (
-        <Navbar setIsAuth={setIsAuth} userData={userData} isAuth={isAuth} />
+      {isAuth && !cbtMode && (
+        <Navbar
+          setIsAuth={setIsAuth}
+          userData={userData}
+          isAuth={isAuth}
+          cbtMode={cbtMode}
+        />
       )}
       <div className="">
         <Routes>
@@ -36,8 +39,8 @@ function App() {
             }
           />
           <Route path="/quiz" element={<ExamList />} />
-          <Route path="/cbt-mode" element={<Cbt />} />
-
+          setCbtMode={setCbtMode}
+          <Route path="/cbt-mode" element={<Cbt setCbtMode={setCbtMode} />} />
           <Route
             path="/login"
             element={

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Cbt = () => {
-  const [time, setTime] = useState(10);
+const Cbt = ({ setCbtMode }) => {
+  const [time, setTime] = useState(1200);
   const [answered, setAnswered] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState(50);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);
@@ -15,6 +15,9 @@ const Cbt = () => {
   const hours = Math.floor(time / 60 / 60);
 
   const navigate = useNavigate();
+  useEffect(() => {
+    setCbtMode(true);
+  });
 
   const countAnswers = () => {
     const answeredQuestions = questions.filter(
@@ -655,7 +658,7 @@ const Cbt = () => {
             {showResult ? "Score" : "Answered"}:{" "}
             {!showResult ? answered : score} / {totalQuestion}
           </div>
-          <div className="lg:hidden">
+          <div className="">
             {!showResult && (
               <p className=" font-semibold text-center text-[1.2rem]">
                 {hours} : {minutes} : {seconds}
@@ -784,6 +787,7 @@ const Cbt = () => {
                 <button
                   className="py-2 md:px-8 px-4 bg-red-700 text-white font-semibold rounded-md"
                   onClick={() => {
+                    setCbtMode(false)
                     navigate("/");
                   }}
                 >
