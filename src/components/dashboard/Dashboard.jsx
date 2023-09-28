@@ -14,13 +14,18 @@ const Dashboard = ({ isAuth, userData }) => {
     }
     return;
   }, [isAuth]);
+  useEffect(() => {
+    if (!userData) {
+      navigate('/login')
+    }
+  }, [userData])
   return (
     <div className=" p-4">
       <div className="">
         <img
           src={displayPhoto}
           alt=""
-          className=" w-[200px] h-[200px] object-cover object-center rounded-full  border-green-900 border-2"
+          className=" w-[200px] h-[200px] object-cover object-center rounded-[20px]  border-green-900 border-2"
         />
         <p className="">{ nickname}</p>
       </div>

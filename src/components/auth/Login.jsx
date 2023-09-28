@@ -9,6 +9,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc } from "firebase/firestore";
 
 const Login = ({ setIsAuth, setUserData, isAuth }) => {
   const [email, setEmail] = useState("");
@@ -62,7 +63,14 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
       alert("Please fill all data and wait for the pics to be uploaded");
       return;
     }
-    updateProfile(auth.currentUser, {
+    // updateProfile(auth.currentUser, {
+    //   displayName: username,
+    //   regNumber: regNumber,
+    //   fullName: fullName,
+    //   photoURL: profilePicsURL,
+    // })
+    const user = auth.currentUser;
+    setDoc(doc(db, "users", user.uid), {
       displayName: username,
       regNumber: regNumber,
       fullName: fullName,
