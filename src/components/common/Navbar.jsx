@@ -25,7 +25,7 @@ const Navbar = ({ userData, isAuth, cbtMode, setIsAuth }) => {
             <img
               src={displayPhoto}
               alt=""
-              className="h-[40px] w-[40px] rounded-full"
+              className="h-[40px] w-[40px] rounded-full object-cover"
             />
             <p className=" md:text-[1.2rem] font-bold text-green-700 italic">
               {nickname}

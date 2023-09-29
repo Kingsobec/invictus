@@ -9,7 +9,7 @@ import {
   updateProfile,
 } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const Login = ({ setIsAuth, setUserData, isAuth }) => {
   const [email, setEmail] = useState("");
@@ -84,16 +84,30 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
         alert(error);
       });
   };
+
+  const fetchDetails = async () => {
+    const user = auth.currentUser;
+    const docSnap = await getDoc(doc(db, "users", user.uid))
+    const userDetails = docSnap.data();
+    if (userDetails) {
+      setUserData(userDetails)
+      localStorage.setItem("userData", JSON.stringify(userDetails));
+      setIsAuth(true);
+      localStorage.setItem("isAuth", "true");
+      navigate("/")
+    }
+  }
   const signIn = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+        fetchDetails()
         // console.log(JSON.stringify(user));
-        localStorage.setItem("userData", JSON.stringify(user));
-        setUserData(user);
-        setIsAuth(true);
-        localStorage.setItem("isAuth", "true");
-        navigate("/");
+        // localStorage.setItem("userData", JSON.stringify(user));
+        // setUserData(user);
+        // setIsAuth(true);
+        // localStorage.setItem("isAuth", "true");
+        // navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;
