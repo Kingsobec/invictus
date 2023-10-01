@@ -20,7 +20,7 @@ const Navbar = ({ userData, isAuth, cbtMode, setIsAuth }) => {
   return (
     <>
       {isAuth && (
-        <div className="flex justify-between items-center px-4 py-2 bg-white border-b-2 border-green-900">
+        <div className="grid grid-cols-3 items-center px-4 py-2 bg-white border-b-[1px] border-green-700">
           <div className=" flex gap-2 items-center">
             <img
               src={displayPhoto}
@@ -31,8 +31,8 @@ const Navbar = ({ userData, isAuth, cbtMode, setIsAuth }) => {
               {nickname}
             </p>
           </div>
-          <img src={logo} alt="Rx Logo" className="h-[40px]" />
-          <div className="">
+          <img src={logo} alt="Rx Logo" className="h-[40px] m-auto" />
+          <div className="text-right">
             <button
               className="text-red-600 text-[1.2rem] font-semibold"
               onClick={signUserOut}

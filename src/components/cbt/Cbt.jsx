@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Cbt = ({ setCbtMode }) => {
-  const [time, setTime] = useState(1200);
+const Cbt = ({ setCbtMode, time, totalQuestion, setTime, isAuth }) => {
   const [answered, setAnswered] = useState(0);
-  const [totalQuestion, setTotalQuestion] = useState(50);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);
   const [score, setScore] = useState(0);
   const [showScore, setShowScore] = useState(false);

@@ -48,14 +48,12 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         setRegister(true);
-        // const user = userCredential.user;
         alert("Account created successfully");
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
         alert(errorMessage);
-        // ..
       });
   };
   const registerUser = () => {
@@ -102,12 +100,6 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
       .then((userCredential) => {
         const user = userCredential.user;
         fetchDetails()
-        // console.log(JSON.stringify(user));
-        // localStorage.setItem("userData", JSON.stringify(user));
-        // setUserData(user);
-        // setIsAuth(true);
-        // localStorage.setItem("isAuth", "true");
-        // navigate("/");
       })
       .catch((error) => {
         const errorCode = error.code;

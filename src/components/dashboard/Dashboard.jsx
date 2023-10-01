@@ -1,13 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Dashboard = ({ isAuth, userData }) => {
+const Dashboard = ({
+  isAuth,
+  userData,
+  totalQuestion,
+  time,
+  setTime,
+  setTotalQuestion,
+}) => {
+  const navigate = useNavigate();
+  const [times, setTimes] = useState();
+
+  if (!userData) {
+    window.location.href = "/login";
+    return;
+  }
+  useEffect(() => {
+    if (!isAuth) {
+      navigate("/login");
+      return;
+    }
+  }, [isAuth]);
   const nickname = userData.displayName;
   const displayPhoto = userData.photoURL;
   const fullName = userData.fullName;
   const regNumber = userData.regNumber;
-  const [time, setTime] = useState(0);
-  const [totalQuestion, setTotalQuestion] = useState(0);
 
   const [courses, setCourses] = useState([
     {
@@ -33,39 +51,40 @@ const Dashboard = ({ isAuth, userData }) => {
   ]);
 
   const calculateTime = () => {
+    setTime(totalQuestion * 45 * 60);
+    setTimes((totalQuestion * 45) / 60);
+  };
+
+  const startExam = () => {
     if (totalQuestion) {
-      setTime((totalQuestion * 45) /60)
+      navigate("/cbt-mode");
+    } else {
+      alert("choose the number of questions");
     }
-  }
+  };
+  const start = (index) => {
+    const coursesUpdate = courses.map((each, i) => {
+      if (i === index) {
+        return { ...each, showCourses: !each.showCourses };
+      } else {
+        return { ...each, showCourses: false };
+      }
+    });
+    setCourses(coursesUpdate);
+  };
   useEffect(() => {
-    calculateTime()
-  }, [totalQuestion])
-    const start = (index) => {
-      const coursesUpdate = courses.map((each, i) => {
-        if (i === index) {
-          return { ...each, showCourses: !each.showCourses };
-        } else {
-          return {...each, showCourses: false}
-        }
-        return each;
-      });
-      setCourses(coursesUpdate);
-    };
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
-    }
-    return;
-  }, [isAuth]);
+    calculateTime();
+  }, [totalQuestion]);
+
   useEffect(() => {
     if (!userData) {
       navigate("/login");
     }
   }, [userData]);
+
   return (
     <div className=" p-4 flex flex-col md:flex-row gap-4">
-      <div className=" text-center md:w-1/3">
+      <div className=" text-center md:w-1/3 font-semibold text-green-900 text-[1.2rem]">
         <img
           src={displayPhoto}
           alt=""
@@ -87,10 +106,14 @@ const Dashboard = ({ isAuth, userData }) => {
                     onClick={() => start(index)}
                   >
                     <p className="">{each.course}</p>
-                    <i className="fa-solid fa-caret-down text-[1.5rem]"></i>
+                    <i
+                      className={`fa-solid fa-caret-${
+                        each.showCourses ? "up" : "down"
+                      } text-[1.5rem]`}
+                    ></i>
                   </div>
                   {each.showCourses && (
-                    <div className="flex justify-between items-center font-semibold">
+                    <div className="flex justify-between items-center font-semibold px-4">
                       <div className="flex flex-col text-center">
                         <label htmlFor="questionNumber">
                           N<span className="underline">o</span>
@@ -99,20 +122,23 @@ const Dashboard = ({ isAuth, userData }) => {
                           type="number"
                           value={totalQuestion}
                           onChange={(e) => {
-                            e.target.value >= 1 && e.target.value <= 100 && setTotalQuestion(e.target.value)
-                            e.target.value >= 100 && setTotalQuestion(100)
-                            e.target.value <= 0 && setTotalQuestion(0)
+                            e.target.value >= 1 &&
+                              e.target.value <= 100 &&
+                              setTotalQuestion(e.target.value);
+                            e.target.value >= 100 && setTotalQuestion(100);
+                            e.target.value <= 0 && setTotalQuestion("");
 
-                            calculateTime()
+                            calculateTime();
                           }}
                           name="questionNumber"
-                          className="rounded border-green-900 border-2 p-2 text-center text-[1.2rem]"
+                          className="rounded border-green-900 border-2 p-2 text-center text-[1.2rem] w-[100px] md:w-[200px]"
                         />
                       </div>
-                      <p className="text-green-900">
-                        TIME: {time}
-                      </p>
-                      <button className="p-2 bg-green-700 text-white  rounded-full hover:scale-110 trans">
+                      <p className="text-green-900">TIME: {times}m</p>
+                      <button
+                        className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
+                        onClick={startExam}
+                      >
                         START
                       </button>
                     </div>
