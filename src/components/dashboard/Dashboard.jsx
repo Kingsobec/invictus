@@ -1,5 +1,7 @@
+import { addDoc, collection, doc, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { db } from "../../firebase-config";
 
 const Dashboard = ({
   isAuth,
@@ -8,20 +10,51 @@ const Dashboard = ({
   time,
   setTime,
   setTotalQuestion,
+  questions,
+  setQuestions,
 }) => {
   const navigate = useNavigate();
   const [times, setTimes] = useState();
+  const addQuestion = async (questions) => {
+    const questionsObject = {};
 
-  if (!userData) {
+    questions.map((question, index) => {
+      questionsObject[`question${index}`] = question;
+    });
+
+    try {
+      await addDoc(collection(db, "questions"), questionsObject);
+      console.log("Questions added to Firestore successfully");
+    } catch (error) {
+      console.error("Error adding questions to Firestore: ", error);
+    }
+  };
+
+  if (!userData || !isAuth) {
     window.location.href = "/login";
     return;
   }
   useEffect(() => {
-    if (!isAuth) {
-      navigate("/login");
-      return;
-    }
-  }, [isAuth]);
+    const getQuestions = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "questions"));
+        const questionData = [];
+
+        querySnapshot.forEach((doc) => {
+          const questionObj = doc.data();
+          // Push each question object into the array
+          questionData.push(...Object.values(questionObj));
+        });
+
+        setQuestions(questionData);
+        console.log(questionData);
+      } catch (error) {
+        console.error("Error getting questions:", error);
+      }
+    };
+
+    getQuestions();
+  }, []);
   const nickname = userData.displayName;
   const displayPhoto = userData.photoURL;
   const fullName = userData.fullName;
@@ -51,7 +84,7 @@ const Dashboard = ({
   ]);
 
   const calculateTime = () => {
-    setTime(totalQuestion * 45 * 60);
+    setTime(totalQuestion * 45);
     setTimes((totalQuestion * 45) / 60);
   };
 
@@ -96,7 +129,7 @@ const Dashboard = ({
 
       <div className="md:w-2/3">
         <div className="">
-          <p className="">Courses</p>
+          <p className=" text-center font-bold text-[2rem] text-red-700">Courses</p>
           <div className="">
             {courses.map((each, index) => {
               return (
@@ -137,7 +170,9 @@ const Dashboard = ({
                       <p className="text-green-900">TIME: {times}m</p>
                       <button
                         className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
-                        onClick={startExam}
+                        onClick={() => {
+                          startExam();
+                        }}
                       >
                         START
                       </button>

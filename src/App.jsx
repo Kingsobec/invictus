@@ -14,6 +14,7 @@ function App() {
   const [cbtMode, setCbtMode] = useState(false);
   const [time, setTime] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState(0);
+   const [questions, setQuestions] = useState([]);
 
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
@@ -44,6 +45,8 @@ function App() {
                 time={time}
                 setTime={setTime}
                 setTotalQuestion={setTotalQuestion}
+                questions={questions}
+                setQuestions={setQuestions}
               />
             }
           />
@@ -57,6 +60,8 @@ function App() {
                 time={time}
                 setTime={setTime}
                 isAuth={isAuth}
+                questions={questions}
+                setQuestions={setQuestions}
               />
             }
           />

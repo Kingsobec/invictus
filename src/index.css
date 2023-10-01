@@ -48,9 +48,9 @@ body {
 }
 
 .rxbg{
-  background-image: url(./assets/rxbg.jpg);
+  background-image: url(./assets/bg.webp);
   background-position: center;
-  background-size: contain;
+  background-size: cover;
   background-repeat: repeat;
   
 }

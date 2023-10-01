@@ -111,7 +111,7 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
   return (
     <div className="flex justify-center items-center min-h-[100vh] text-center rxbg">
       {!register ? (
-        <div className="bg-[#ffffffee] p-4">
+        <div className="bg-[#ffffffee] p-4 rounded-[20px]">
           <p className="text-[2rem] font-semibold text-green-600 mb-8">
             INVICTUS WEB APP
           </p>
