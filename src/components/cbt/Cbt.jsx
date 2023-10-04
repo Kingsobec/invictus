@@ -1,7 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const Cbt = ({ setCbtMode, time, totalQuestion, setTime, isAuth, questions, setQuestions }) => {
+const Cbt = ({
+  setCbtMode,
+  time,
+  totalQuestion,
+  setTime,
+  isAuth,
+  questions,
+  setQuestions,
+  whichCourse
+}) => {
   const [answered, setAnswered] = useState(0);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);
   const [score, setScore] = useState(0);
@@ -50,10 +59,10 @@ const Cbt = ({ setCbtMode, time, totalQuestion, setTime, isAuth, questions, setQ
   };
   useEffect(() => {
     if (time <= 0) {
-      navigate('/')
-      setCbtMode(false)
+      navigate("/");
+      setCbtMode(false);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (time <= 0) {
@@ -131,7 +140,7 @@ const Cbt = ({ setCbtMode, time, totalQuestion, setTime, isAuth, questions, setQ
                 className="py-2 md:px-8 px-4 mr-4 bg-red-900 text-white font-semibold rounded-md"
                 onClick={() => {
                   navigate("/");
-                  setCbtMode(false)
+                  setCbtMode(false);
                 }}
               >
                 home
@@ -157,9 +166,9 @@ const Cbt = ({ setCbtMode, time, totalQuestion, setTime, isAuth, questions, setQ
       >
         <div className=" max-w-[1200px]">
           <div className="flex justify-between md:text-[1.5rem] text-[1.3rem] font-bold ">
-            <p className="">PCH232: {questionToDisplay + 1}</p>
+            <p className="">{whichCourse}: {questionToDisplay + 1}</p>
             {showResult ? "Score" : "Answered"}:{" "}
-            {!showResult ? answered : score} / {totalQuestion}
+            {!showResult ? answered : score} / {Math.floor(totalQuestion)}
           </div>
           <div className="">
             {!showResult && (

@@ -12,6 +12,8 @@ const Dashboard = ({
   setTotalQuestion,
   questions,
   setQuestions,
+  whichCourse,
+  setWhichCourse,
 }) => {
   const navigate = useNavigate();
   const [times, setTimes] = useState();
@@ -171,6 +173,7 @@ const Dashboard = ({
                       <button
                         className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
                         onClick={() => {
+                          setWhichCourse(each.course)
                           startExam();
                         }}
                       >
