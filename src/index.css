@@ -10,7 +10,7 @@ html {
 
 body {
   font-family: 'Montserrat', sans-serif;
-  @apply bg-[#f5f5f5]
+  @apply bg-[#f0f0f0]
 }
 
 /* Styling to change the appearance of the scroll bars */

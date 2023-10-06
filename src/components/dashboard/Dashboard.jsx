@@ -14,12 +14,43 @@ const Dashboard = ({
   setQuestions,
   whichCourse,
   setWhichCourse,
+  isAdmin,
+  setIsAdmin,
 }) => {
   const navigate = useNavigate();
   const [times, setTimes] = useState();
-  const [users, setUsers] = useState([])
-  const [showUsers, setShowUsers ] = useState(false)
-  const addQuestion = async (question, subject) => {
+  const [users, setUsers] = useState([]);
+  const [showUsers, setShowUsers] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [optionA, setOptionA] = useState("");
+  const [optionB, setOptionB] = useState("");
+  const [optionC, setOptionC] = useState("");
+  const [optionD, setOptionD] = useState("");
+  const [answer, setAnswer] = useState(0)
+  const addQuestion = async (
+    question,
+    optionA,
+    optionB,
+    optionC,
+    optionD,
+    answer,
+    subject
+  ) => {
+    if (!question || !optionA || !optionB || !optionC || !optionD || !answer) {
+      alert("Please make sure you fill all the details and select the answer")
+      return
+    }
+    const data = {
+      question: question,
+      optionA: optionA,
+      optionB: optionB,
+      optionC: optionC,
+      optionD: optionD,
+      answer: Number(answer),
+      subject: subject,
+      answered: false,
+      picked: 0,
+    };
 
     // {
     //   question: "Sal sedativum is used in the treatment of ………………….",
@@ -53,13 +84,19 @@ const Dashboard = ({
     // }
 
     try {
-      await addDoc(collection(db, subject), question);
+      await addDoc(collection(db, subject), data);
+      setQuestion("")
+      setOptionA("")
+      setOptionB("")
+      setOptionC("")
+      setOptionD("")
+      setAnswer(0)
     } catch (error) {
-      alert( error);
+      alert(error);
     }
   };
 
-  if (!userData || !isAuth) {
+  if (!localStorage.getItem("isAuth") && !localStorage.getItem("userData")) {
     window.location.href = "/login";
     return;
   }
@@ -92,14 +129,16 @@ const Dashboard = ({
 
         if (!querySnapshot.empty) {
           const userDataArray = querySnapshot.docs.map((doc) => doc.data());
-          setUsers(userDataArray.sort((a, b) => {
-            const nameA = a.fullName.toLowerCase();
-            const nameB = b.fullName.toLowerCase();
+          setUsers(
+            userDataArray.sort((a, b) => {
+              const nameA = a.fullName.toLowerCase();
+              const nameB = b.fullName.toLowerCase();
 
-            if (nameA < nameB) return -1;
-            if (nameA > nameB) return 1;
-            return 0;
-          }));
+              if (nameA < nameB) return -1;
+              if (nameA > nameB) return 1;
+              return 0;
+            })
+          );
           console.log(userDataArray);
         } else {
           console.log("No user data found");
@@ -173,13 +212,13 @@ const Dashboard = ({
   }, [userData]);
 
   return (
-    <>
+    <div className="max-w-[1200px] m-auto">
       <div className=" p-4 flex flex-col md:flex-row gap-4">
         <div className=" text-center md:w-1/3 font-semibold text-green-900 text-[1.2rem]">
           <img
             src={displayPhoto}
             alt=""
-            className=" w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-cover object-center rounded-[20px] m-auto border-green-900 border-2"
+            className=" w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-cover object-center rounded-[10px] m-auto border-green-900 border-2"
           />
           <p className="">{fullName}</p>
           <p className="">{regNumber}</p>
@@ -195,7 +234,7 @@ const Dashboard = ({
                 return (
                   <div className="w-full" key={index}>
                     <div
-                      className="flex justify-between w-full p-2 bg-gray-200 rounded-md my-4 hover:bg-green-900 trans text-green-900 font-bold text-[1.2rem] hover:text-white"
+                      className="flex justify-between w-full p-2 bg-white rounded-md my-4 hover:bg-green-900 trans text-green-900 font-bold text-[1.2rem] hover:text-white"
                       onClick={() => start(index)}
                     >
                       <p className="">{each.course}</p>
@@ -205,39 +244,108 @@ const Dashboard = ({
                         } text-[1.5rem]`}
                       ></i>
                     </div>
-                    {each.showCourses && (
-                      <div className="flex justify-between items-center font-semibold px-4">
-                        <div className="flex flex-col text-center">
-                          <label htmlFor="questionNumber">
-                            N<span className="underline">o</span>
-                          </label>
-                          <input
-                            type="number"
-                            value={totalQuestion}
-                            onChange={(e) => {
-                              e.target.value >= 1 &&
-                                e.target.value <= 100 &&
-                                setTotalQuestion(e.target.value);
-                              e.target.value >= 100 && setTotalQuestion(100);
-                              e.target.value <= 0 && setTotalQuestion("");
 
-                              calculateTime();
-                            }}
-                            name="questionNumber"
-                            className="rounded border-green-900 border-2 p-2 text-center text-[1.2rem] w-[100px] md:w-[200px]"
-                          />
-                        </div>
-                        <p className="text-green-900">TIME: {times}m</p>
-                        <button
-                          className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
-                          onClick={() => {
-                            addQuestion(questions, each.course);
-                            setWhichCourse(each.course);
-                            startExam();
-                          }}
+                    {each.showCourses && (
+                      <div className="">
+                        <div
+                          className={`text-[1.1rem] font-semibold ${
+                            !isAdmin ? "hidden" : "block"
+                          }`}
                         >
-                          START
-                        </button>
+                          <textarea
+                            placeholder="QUESTION"
+                            className="p-2 w-full mb-4 border-2 border-green-700 rounded"
+                            value={question}
+                            onChange={(e) => setQuestion(e.target.value)}
+                          ></textarea>
+                          <textarea
+                            className="w-full p-2 mb-2 border border-red-700 rounded"
+                            placeholder="A"
+                            onChange={(e) => setOptionA(e.target.value)}
+                            value={optionA}
+                          />
+                          <textarea
+                            className="w-full p-2 mb-2 border border-red-700 rounded"
+                            placeholder="B"
+                            onChange={(e) => setOptionB(e.target.value)}
+                            value={optionB}
+                          />
+                          <textarea
+                            className="w-full p-2 mb-2 border border-red-700 rounded"
+                            placeholder="C"
+                            onChange={(e) => setOptionC(e.target.value)}
+                            value={optionC}
+                          />
+                          <textarea
+                            className="w-full p-2 border border-red-700 rounded mb-2"
+                            placeholder="D"
+                            onChange={(e) => setOptionD(e.target.value)}
+                            value={optionD}
+                          />
+                          <select className="rounded-md p-2" value={answer} onChange={e =>setAnswer(e.target.value)}>
+                            <option value="0" disabled>answer</option>
+                            <option value="1">A</option>
+                            <option value="2">B</option>
+                            <option value="3">C</option>
+                            <option value="4">D</option>
+                          </select>
+                          <div className="flex justify-center">
+                            <button
+                              className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
+                              onClick={() => {
+                                
+                                addQuestion(
+                                  question,
+                                  optionA,
+                                  optionB,
+                                  optionC,
+                                  optionD,
+                                  answer,
+                                  each.course
+                                );
+                              }}
+                            >
+                              SUBMIT
+                            </button>
+                          </div>
+                        </div>
+                        <div
+                          className={`flex justify-between items-center font-semibold px-4 ${
+                            !isAdmin ? "block" : "hidden"
+                          }`}
+                        >
+                          <div className="flex flex-col text-center">
+                            <label htmlFor="questionNumber">
+                              N<span className="underline">o</span>
+                            </label>
+                            <input
+                              type="number"
+                              value={totalQuestion}
+                              onChange={(e) => {
+                                e.target.value >= 1 &&
+                                  e.target.value <= 100 &&
+                                  setTotalQuestion(e.target.value);
+                                e.target.value >= 100 && setTotalQuestion(100);
+                                e.target.value <= 0 && setTotalQuestion("");
+
+                                calculateTime();
+                              }}
+                              name="questionNumber"
+                              className="rounded border-green-900 border-2 p-2 text-center text-[1.2rem] w-[100px] md:w-[200px]"
+                            />
+                          </div>
+                          <p className="text-green-900">TIME: {times}m</p>
+                          <button
+                            className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
+                            onClick={() => {
+                              addQuestion(questions, each.course);
+                              setWhichCourse(each.course);
+                              startExam();
+                            }}
+                          >
+                            START
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -247,33 +355,45 @@ const Dashboard = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 p-4 max-h-[500px] overflow-scroll">{users.map((each, index) => {
-        return (
-          <div
-            className="p-2 bg-white rounded-md flex flex-col md:flex-row md:items-center gap-2 justify-between"
-            key={index}
-          >
-            <div className="flex items-center gap-2">
-              <p>{ index + 1}</p>
-              <img
-                src={each.photoURL}
-                className="w-[60px] h-[60px] object-cover rounded-full"
-              />
-              <p className="font-semibold text-green-900 md:text-[1.1rem]">
-                {each.fullName} <br /> {each.regNumber}
-              </p>
+      <div className="flex flex-col gap-4 p-4 max-h-[500px] overflow-scroll">
+        {users.map((each, index) => {
+          return (
+            <div
+              className="p-2 bg-white rounded-md flex flex-col md:flex-row md:items-center gap-2 justify-between"
+              key={index}
+            >
+              <div className="flex items-center gap-2">
+                <p>{index + 1}</p>
+                <img
+                  src={each.photoURL}
+                  className="w-[60px] h-[60px] object-cover rounded-full"
+                />
+                <p className="font-semibold text-green-900 md:text-[1.1rem]">
+                  {each.fullName} <br /> {each.regNumber}
+                </p>
+              </div>
+              <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
+                <p className="border border-green-900 rounded-md px-2 ">
+                  PTI <br /> {0}
+                </p>
+                <p className="border border-green-900 rounded-md px-2 ">
+                  PCT <br /> {0}
+                </p>
+                <p className="border border-green-900 rounded-md px-2 ">
+                  PCH <br /> {0}
+                </p>
+                <p className="border border-green-900 rounded-md px-2 ">
+                  PCG <br /> {0}
+                </p>
+                <p className="border border-green-900 rounded-md px-2 ">
+                  PCL <br /> {0}
+                </p>
+              </div>
             </div>
-            <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem]">
-              <p className="border border-green-900 rounded-md md:p-1 p-[.5px]">PTI 311 <br /> {0 }</p>
-              <p className="border border-green-900 rounded-md md:p-1 p-[.5px]">PCT 321 <br /> {0 }</p>
-              <p className="border border-green-900 rounded-md md:p-1 p-[.5px]">PCH 331 <br /> {0 }</p>
-              <p className="border border-green-900 rounded-md md:p-1 p-[.5px]">PCG 341 <br /> {0 }</p>
-              <p className="border border-green-900 rounded-md md:p-1 p-[.5px]">PCL 351 <br /> {0 }</p>
-            </div>
-          </div>
-        );
-      })}</div>
-    </>
+          );
+        })}
+      </div>
+    </div>
   );
 };
 

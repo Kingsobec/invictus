@@ -15,7 +15,8 @@ function App() {
   const [time, setTime] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [questions, setQuestions] = useState([]);
-  const [whichCourse, setWhichCourse] = useState("")
+  const [whichCourse, setWhichCourse] = useState("");
+  const [isAdmin, setIsAdmin] = useState(true);
 
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
@@ -24,7 +25,7 @@ function App() {
     // setUserData(JSON.parse(storedUserData));
   }, []);
   return (
-    <div className="">
+    <div className="max-w-[1700px] m-auto">
       {isAuth && !cbtMode && (
         <Navbar
           setIsAuth={setIsAuth}
@@ -50,6 +51,8 @@ function App() {
                 setQuestions={setQuestions}
                 whichCourse={whichCourse}
                 setWhichCourse={setWhichCourse}
+                isAdmin={isAdmin}
+                setIsAdmin={setIsAdmin}
               />
             }
           />
@@ -66,7 +69,6 @@ function App() {
                 questions={questions}
                 setQuestions={setQuestions}
                 whichCourse={whichCourse}
-
               />
             }
           />
