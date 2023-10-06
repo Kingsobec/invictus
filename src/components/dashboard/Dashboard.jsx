@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { QuerySnapshot, addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase-config";
@@ -47,21 +47,9 @@ const Dashboard = ({
       optionC: optionC,
       optionD: optionD,
       answer: Number(answer),
-      // subject: subject,
       answered: false,
       picked: 0,
     };
-
-    // {
-    //   question: "Sal sedativum is used in the treatment of ………………….",
-    //   optionA: "Cancer",
-    //   optionB: "Inflammatory disorder",
-    //   optionC: "Goiter",
-    //   optionD: "Infectious diseases",
-    //   answer: 4,
-    //   answered: false,
-    //   picked: 0,
-    // },
 
     try {
       await addDoc(collection(db, subject), data);
@@ -83,17 +71,16 @@ const Dashboard = ({
   useEffect(() => {
     const getQuestions = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "questions"));
+        const datas = await getDocs(collection(db, "PCG 341"));
         const questionData = [];
 
-        querySnapshot.forEach((doc) => {
-          const questionObj = doc.data();
-          // Push each question object into the array
-          questionData.push(...Object.values(questionObj));
-        });
+        // querySnapshot.forEach((doc) => {
+        //   const questionObj = doc.data();
+        //   questionData.push(...Object.values(questionObj));
+        // });
 
-        setQuestions(questionData);
-        // console.log(questionData);
+        setQuestions(datas.docs.map((doc) => ({...doc.data()})));
+        console.log(questions);
       } catch (error) {
         console.error("Error getting questions:", error);
       }
@@ -119,7 +106,7 @@ const Dashboard = ({
               return 0;
             })
           );
-          console.log(userDataArray);
+          // console.log(userDataArray);
         } else {
           console.log("No user data found");
         }
@@ -262,8 +249,14 @@ const Dashboard = ({
                             onChange={(e) => setOptionD(e.target.value)}
                             value={optionD}
                           />
-                          <select className="rounded-md p-2" value={answer} onChange={e =>setAnswer(e.target.value)}>
-                            <option value="0" disabled>answer</option>
+                          <select
+                            className="rounded-md p-2"
+                            value={answer}
+                            onChange={(e) => setAnswer(e.target.value)}
+                          >
+                            <option value="0" disabled>
+                              answer
+                            </option>
                             <option value="1">A</option>
                             <option value="2">B</option>
                             <option value="3">C</option>
@@ -273,7 +266,6 @@ const Dashboard = ({
                             <button
                               className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
                               onClick={() => {
-                                
                                 addQuestion(
                                   question,
                                   optionA,
@@ -318,7 +310,6 @@ const Dashboard = ({
                           <button
                             className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
                             onClick={() => {
-                              addQuestion(questions, each.course);
                               setWhichCourse(each.course);
                               startExam();
                             }}
@@ -335,44 +326,46 @@ const Dashboard = ({
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 p-4 max-h-[500px] overflow-scroll">
-        {users.map((each, index) => {
-          return (
-            <div
-              className="p-2 bg-white rounded-md flex flex-col md:flex-row md:items-center gap-2 justify-between"
-              key={index}
-            >
-              <div className="flex items-center gap-2">
-                <p>{index + 1}</p>
-                <img
-                  src={each.photoURL}
-                  className="w-[60px] h-[60px] object-cover rounded-full"
-                />
-                <p className="font-semibold text-green-900 md:text-[1.1rem]">
-                  {each.fullName} <br /> {each.regNumber}
-                </p>
+      {isAdmin && (
+        <div className="flex flex-col gap-4 p-4 max-h-[500px] overflow-scroll">
+          {users.map((each, index) => {
+            return (
+              <div
+                className="p-2 bg-white rounded-md flex flex-col md:flex-row md:items-center gap-2 justify-between"
+                key={index}
+              >
+                <div className="flex items-center gap-2">
+                  <p>{index + 1}</p>
+                  <img
+                    src={each.photoURL}
+                    className="w-[60px] h-[60px] object-cover rounded-full"
+                  />
+                  <p className="font-semibold text-green-900 md:text-[1.1rem]">
+                    {each.fullName} <br /> {each.regNumber}
+                  </p>
+                </div>
+                <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
+                  <p className="border border-green-900 rounded-md px-2 ">
+                    PTI <br /> {0}
+                  </p>
+                  <p className="border border-green-900 rounded-md px-2 ">
+                    PCT <br /> {0}
+                  </p>
+                  <p className="border border-green-900 rounded-md px-2 ">
+                    PCH <br /> {0}
+                  </p>
+                  <p className="border border-green-900 rounded-md px-2 ">
+                    PCG <br /> {0}
+                  </p>
+                  <p className="border border-green-900 rounded-md px-2 ">
+                    PCL <br /> {0}
+                  </p>
+                </div>
               </div>
-              <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
-                <p className="border border-green-900 rounded-md px-2 ">
-                  PTI <br /> {0}
-                </p>
-                <p className="border border-green-900 rounded-md px-2 ">
-                  PCT <br /> {0}
-                </p>
-                <p className="border border-green-900 rounded-md px-2 ">
-                  PCH <br /> {0}
-                </p>
-                <p className="border border-green-900 rounded-md px-2 ">
-                  PCG <br /> {0}
-                </p>
-                <p className="border border-green-900 rounded-md px-2 ">
-                  PCL <br /> {0}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
