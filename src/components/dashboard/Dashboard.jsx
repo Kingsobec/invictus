@@ -47,7 +47,7 @@ const Dashboard = ({
       optionC: optionC,
       optionD: optionD,
       answer: Number(answer),
-      subject: subject,
+      // subject: subject,
       answered: false,
       picked: 0,
     };
@@ -62,26 +62,6 @@ const Dashboard = ({
     //   answered: false,
     //   picked: 0,
     // },
-    // {
-    //   question: "Sodium salt of boric acid is called ………..",
-    //   optionA: "Bomex",
-    //   optionB: "Botex",
-    //   optionC: "Borax",
-    //   optionD: "None of the options",
-    //   answer: 3,
-    //   answered: false,
-    //   picked: 0,
-    // },
-    // {
-    //   question: "The central atom in cytomib is…………………………….",
-    //   optionA: "Sodium",
-    //   optionB: "Potassium",
-    //   optionC: "Boron",
-    //   optionD: "Lithium",
-    //   answer: 3,
-    //   answered: false,
-    //   picked: 0,
-    // }
 
     try {
       await addDoc(collection(db, subject), data);
