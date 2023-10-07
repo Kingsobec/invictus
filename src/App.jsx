@@ -16,7 +16,7 @@ function App() {
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [whichCourse, setWhichCourse] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(!false);
 
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
