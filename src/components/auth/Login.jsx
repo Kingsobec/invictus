@@ -73,6 +73,13 @@ const Login = ({ setIsAuth, setUserData, isAuth }) => {
       regNumber: regNumber,
       fullName: fullName,
       photoURL: profilePicsURL,
+      PTI: 0,
+      PCT: 0,
+      PCH: 0,
+      PCG: 0,
+      PCL: 0,
+      adminMode: false,
+      Oracle: false,
     })
       .then(() => {
         alert("registration successful");

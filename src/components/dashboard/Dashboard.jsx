@@ -122,6 +122,13 @@ const Dashboard = ({
   const displayPhoto = userData.photoURL;
   const fullName = userData.fullName;
   const regNumber = userData.regNumber;
+  const oracle = userData.Oracle;
+  const adminMode = userData.adminMode;
+  const PTI = userData.PTI;
+  const PCT = userData.PCT;
+  const PCH = userData.PCH;
+  const PCG = userData.PCG;
+  const PCL = userData.PCL;
 
   const [courses, setCourses] = useState([
     {
@@ -336,29 +343,31 @@ const Dashboard = ({
               >
                 <div className="flex items-center gap-2">
                   <p>{index + 1}</p>
-                  <img
-                    src={each.photoURL}
-                    className="w-[60px] h-[60px] object-cover rounded-full"
-                  />
+                  {oracle && (
+                    <img
+                      src={each.photoURL}
+                      className="w-[60px] h-[60px] object-cover rounded-full"
+                    />
+                  )}
                   <p className="font-semibold text-green-900 md:text-[1.1rem]">
                     {each.fullName} <br /> {each.regNumber}
                   </p>
                 </div>
                 <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PTI <br /> {0}
+                    PTI <br /> {PTI}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCT <br /> {0}
+                    PCT <br /> {PCT}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCH <br /> {0}
+                    PCH <br /> {PCH}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCG <br /> {0}
+                    PCG <br /> {PCG}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCL <br /> {0}
+                    PCL <br /> {PCL}
                   </p>
                 </div>
               </div>
