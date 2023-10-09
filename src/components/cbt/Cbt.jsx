@@ -1,5 +1,7 @@
+import { doc, setDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../../firebase-config";
 
 const Cbt = ({
   setCbtMode,
@@ -9,7 +11,8 @@ const Cbt = ({
   isAuth,
   questions,
   setQuestions,
-  whichCourse
+  whichCourse,
+  userData,
 }) => {
   const [answered, setAnswered] = useState(0);
   const [questionToDisplay, setQuestionToDisplay] = useState(0);
@@ -34,6 +37,10 @@ const Cbt = ({
   };
 
   const submit = () => {
+    if (answered / totalQuestion <= 0.5) {
+      alert("You must answer up to hald of the questions before submission");
+      return;
+    }
     if (showResult) {
       return;
     }
@@ -42,7 +49,43 @@ const Cbt = ({
     );
     setScore(correctAnswers.length);
     setShowScore(true);
+    updateHistory()
   };
+
+  const updateHistory = () => {
+    const user = auth.currentUser;
+    if (score > userData.PTI && whichCourse == "PTI 311") {
+    setDoc(doc(db, "users", user.uid), {
+      ...userData,
+      PTI: score,
+    })
+    }
+    if (score > userData.PCT && whichCourse == "PCT 321") {
+    setDoc(doc(db, "users", user.uid), {
+      ...userData,
+      PCT: score,
+    })
+    }
+    if (score > userData.PCH && whichCourse == "PCH 331") {
+    setDoc(doc(db, "users", user.uid), {
+      ...userData,
+      PCH: score,
+    })
+    }
+    if (score > userData.PCG && whichCourse == "PCG 341") {
+      setDoc(doc(db, "users", user.uid), {
+        ...userData,
+        PCG: score,
+      })
+    }
+    console.log(userData.PCG);
+    if (score > userData.PCL && whichCourse == "PCL 351") {
+    setDoc(doc(db, "users", user.uid), {
+      ...userData,
+      PCL: score,
+    })
+    }
+  }
 
   const handleOptionChange = (index, num) => {
     if (showResult) {
