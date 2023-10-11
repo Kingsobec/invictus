@@ -16,13 +16,14 @@ function App() {
   const [totalQuestion, setTotalQuestion] = useState(0);
   const [questions, setQuestions] = useState([]);
   const [whichCourse, setWhichCourse] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(userData.adminMode);
+  useEffect(() => {
+    setIsAdmin(userData.adminMode)
+  }, [userData])
 
   useEffect(() => {
     const storedIsAuth = localStorage.getItem("isAuth");
-    // const storedUserData = localStorage.getItem("userData");
     setIsAuth(storedIsAuth === "true");
-    // setUserData(JSON.parse(storedUserData));
   }, []);
   return (
     <div className="max-w-[1700px] m-auto">

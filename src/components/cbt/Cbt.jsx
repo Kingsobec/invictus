@@ -78,7 +78,6 @@ const Cbt = ({
         PCG: score,
       })
     }
-    console.log(userData.PCG);
     if (score > userData.PCL && whichCourse == "PCL 351") {
     setDoc(doc(db, "users", user.uid), {
       ...userData,

@@ -27,6 +27,16 @@ const Dashboard = ({
   const [optionC, setOptionC] = useState("");
   const [optionD, setOptionD] = useState("");
   const [answer, setAnswer] = useState(0)
+  const [ptiQuestions, setptiQuestions] = useState()
+  const [pchQuestions, setpchQuestions] = useState()
+  const [pcgQuestions, setpcgQuestions] = useState()
+  const [pctQuestions, setpctQuestions] = useState()
+  useEffect(() => {
+    setptiQuestions(JSON.parse(localStorage.getItem("ptiQuestions")));
+    setpchQuestions(JSON.parse(localStorage.getItem("pchQuestions")));
+    setpcgQuestions(JSON.parse(localStorage.getItem("pcgQuestions")));
+    setpctQuestions(JSON.parse(localStorage.getItem("pctQuestions")));
+  }, [])
   const addQuestion = async (
     question,
     optionA,
@@ -68,24 +78,48 @@ const Dashboard = ({
     window.location.href = "/login";
     return;
   }
+  const getPCG = async () => {
+    try {
+      const datas = await getDocs(collection(db, "PCG 341"));
+      const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
+      localStorage.setItem("pcgQuestions", JSON.stringify(questionData))
+      // setQuestions(datas.docs.map((doc) => ({ ...doc.data() })));
+    } catch (error) {
+      console.error("Error getting questions:", error);
+    }
+  };
+  const getPCH = async () => {
+    try {
+      const datas = await getDocs(collection(db, "PCH 331"));
+      const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
+      localStorage.setItem("pchQuestions", JSON.stringify(questionData))
+    } catch (error) {
+      console.error("Error getting questions:", error);
+    }
+  };
+  const getPCT = async () => {
+    try {
+      const datas = await getDocs(collection(db, "PCT 321"));
+      const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
+      localStorage.setItem("pctQuestions", JSON.stringify(questionData))
+    } catch (error) {
+      console.error("Error getting questions:", error);
+    }
+  };
+  const getPTI = async () => {
+    try {
+      const datas = await getDocs(collection(db, "PTI 311"));
+      const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
+      localStorage.setItem("ptiQuestions", JSON.stringify(questionData))
+    } catch (error) {
+      console.error("Error getting questions:", error);
+    }
+  };
   useEffect(() => {
-    const getQuestions = async () => {
-      try {
-        const datas = await getDocs(collection(db, "PCG 341"));
-        const questionData = [];
-
-        // querySnapshot.forEach((doc) => {
-        //   const questionObj = doc.data();
-        //   questionData.push(...Object.values(questionObj));
-        // });
-
-        setQuestions(datas.docs.map((doc) => ({...doc.data()})));
-        console.log(questions);
-      } catch (error) {
-        console.error("Error getting questions:", error);
-      }
-    };
-    getQuestions();
+    getPTI()
+    getPCT()
+    getPCH()
+    getPCG();
   }, []);
 
   useEffect(() => {
@@ -147,10 +181,10 @@ const Dashboard = ({
       course: "PCG 341",
       showCourses: false,
     },
-    {
-      course: "PCL 351",
-      showCourses: false,
-    },
+    // {
+    //   course: "PCL 351",
+    //   showCourses: false,
+    // },
   ]);
 
   const calculateTime = () => {
@@ -159,6 +193,7 @@ const Dashboard = ({
   };
 
   const startExam = () => {
+    setQuestion(pchQuestions)
     if (totalQuestion) {
       navigate("/cbt-mode");
     } else {
@@ -245,7 +280,7 @@ const Dashboard = ({
                             value={optionB}
                           />
                           <textarea
-                            className="w-full p-2 mb-2 border border-red-700 rounded"
+                            className="w-full p-2 mb-2 border border-red-700 rounded "
                             placeholder="C"
                             onChange={(e) => setOptionC(e.target.value)}
                             value={optionC}
