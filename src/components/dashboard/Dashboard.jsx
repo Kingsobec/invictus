@@ -191,9 +191,21 @@ const Dashboard = ({
     setTime(totalQuestion * 45);
     setTimes((totalQuestion * 45) / 60);
   };
-
+  const putQuestions = (course) => {
+  if (course == "PTI 311") {
+    setQuestions(ptiQuestions);
+  }
+  if (course == "PCT 321") {
+    setQuestions(pctQuestions);
+  }
+  if (course == "PCH 331") {
+    setQuestions(pchQuestions);
+  }
+  if (course == "PCG 341") {
+    setQuestions(pcgQuestions);
+  }
+}
   const startExam = () => {
-    setQuestion(pchQuestions)
     if (totalQuestion) {
       navigate("/cbt-mode");
     } else {
@@ -244,7 +256,10 @@ const Dashboard = ({
                   <div className="w-full" key={index}>
                     <div
                       className="flex justify-between w-full p-2 bg-white rounded-md my-4 hover:bg-green-900 trans text-green-900 font-bold text-[1.2rem] hover:text-white"
-                      onClick={() => start(index)}
+                      onClick={() => {
+                        start(index)
+                        putQuestions(each.course)
+                      }}
                     >
                       <p className="">{each.course}</p>
                       <i
@@ -353,7 +368,7 @@ const Dashboard = ({
                             className="p-2 bg-green-700 text-white  rounded-[10px] hover:scale-110 trans"
                             onClick={() => {
                               setWhichCourse(each.course);
-                              startExam();
+                              startExam(each.course);
                             }}
                           >
                             START

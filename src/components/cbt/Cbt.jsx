@@ -38,7 +38,7 @@ const Cbt = ({
 
   const submit = () => {
     if (answered / totalQuestion <= 0.5) {
-      alert("You must answer up to hald of the questions before submission");
+      alert("You must answer up to half of the questions before submission");
       return;
     }
     if (showResult) {
