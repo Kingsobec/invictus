@@ -39,7 +39,7 @@ function App() {
           cbtMode={cbtMode}
         />
       )}
-      <div className="">
+      <div className="min-h-[90vh]">
         <Routes>
           <Route
             path="/"

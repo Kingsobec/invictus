@@ -421,19 +421,19 @@ const Dashboard = ({
                 </div>
                 <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PTI <br /> {PTI}
+                    PTI <br /> {each.PTI}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCT <br /> {PCT}
+                    PCT <br /> {each.PCT}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCH <br /> {PCH}
+                    PCH <br /> {each.PCH}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCG <br /> {PCG}
+                    PCG <br /> {each.PCG}
                   </p>
                   <p className="border border-green-900 rounded-md px-2 ">
-                    PCL <br /> {PCL}
+                    PCL <br /> {each.PCL}
                   </p>
                 </div>
               </div>
