@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebase-config";
@@ -52,39 +52,30 @@ const Cbt = ({
     updateHistory()
   };
 
-  const updateHistory = () => {
-    const user = auth.currentUser;
-    if (score > userData.PTI && whichCourse == "PTI 311") {
-    setDoc(doc(db, "users", user.uid), {
-      ...userData,
-      PTI: score,
-    })
-    }
-    if (score > userData.PCT && whichCourse == "PCT 321") {
-    setDoc(doc(db, "users", user.uid), {
-      ...userData,
-      PCT: score,
-    })
-    }
-    if (score > userData.PCH && whichCourse == "PCH 331") {
-    setDoc(doc(db, "users", user.uid), {
-      ...userData,
-      PCH: score,
-    })
-    }
-    if (score > userData.PCG && whichCourse == "PCG 341") {
-      setDoc(doc(db, "users", user.uid), {
-        ...userData,
-        PCG: score,
-      })
-    }
-    if (score > userData.PCL && whichCourse == "PCL 351") {
-    setDoc(doc(db, "users", user.uid), {
-      ...userData,
-      PCL: score,
-    })
-    }
+const updateHistory = async () => {
+  const user = auth.currentUser;
+  const userRef = doc(db, "users", user.uid);
+
+  if (score > userData.PTI && whichCourse === "PTI 311") {
+    await updateDoc(userRef, { PTI: Math.floor((score/totalQuestion) * 100) });
   }
+
+  if (score > userData.PCT && whichCourse === "PCT 321") {
+    await updateDoc(userRef, { PCT: Math.floor((score/totalQuestion) * 100) });
+  }
+
+  if (score > userData.PCH && whichCourse === "PCH 331") {
+    await updateDoc(userRef, { PCH: Math.floor((score/totalQuestion) * 100) });
+  }
+
+  if (score > userData.PCG && whichCourse === "PCG 341") {
+    await updateDoc(userRef, { PCG: Math.floor((score/totalQuestion) * 100) });
+  }
+
+  if (score > userData.PCL && whichCourse === "PCL 351") {
+    await updateDoc(userRef, { PCL: Math.floor((score/totalQuestion) * 100) });
+  }
+};
 
   const handleOptionChange = (index, num) => {
     if (showResult) {
@@ -171,7 +162,7 @@ const Cbt = ({
               </p>
             </div>
             <p className=" text-[3rem] text-green-900">
-              {(score / totalQuestion) * 100}%
+              {Math.floor((score / totalQuestion) * 100)}%
             </p>
             <p className=" italic mb-8 text-[1.5rem]">
               {(score / totalQuestion) * 100 >= 50 ? "EXCELLENT" : "POOR"}
@@ -208,7 +199,9 @@ const Cbt = ({
       >
         <div className=" max-w-[1200px]">
           <div className="flex justify-between md:text-[1.5rem] text-[1.3rem] font-bold ">
-            <p className="">{whichCourse}: {questionToDisplay + 1}</p>
+            <p className="">
+              {whichCourse}: {questionToDisplay + 1}
+            </p>
             {showResult ? "Score" : "Answered"}:{" "}
             {!showResult ? answered : score} / {Math.floor(totalQuestion)}
           </div>
@@ -383,6 +376,7 @@ const Cbt = ({
                     onClick={() => {
                       setQuestionToDisplay(index);
                       countAnswers();
+                      window.scrollTo(0, 0);
                     }}
                   >
                     {" "}

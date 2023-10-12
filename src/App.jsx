@@ -6,6 +6,7 @@ import Navbar from "./components/common/Navbar";
 import Dashboard from "./components/dashboard/Dashboard";
 import ExamList from "./components/dashboard/ExamList";
 import Cbt from "./components/cbt/Cbt";
+import Footer from "./components/common/Footer";
 function App() {
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem("userData"))
@@ -13,11 +14,14 @@ function App() {
   const [isAuth, setIsAuth] = useState(false);
   const [cbtMode, setCbtMode] = useState(false);
   const [time, setTime] = useState(0);
-  const [totalQuestion, setTotalQuestion] = useState(0);
-  const [questions, setQuestions] = useState([]);
+  const [totalQuestion, setTotalQuestion] = useState('');
+  const [questions, setQuestions] = useState([{}]);
   const [whichCourse, setWhichCourse] = useState("");
-  const [isAdmin, setIsAdmin] = useState(userData.adminMode);
+  const [isAdmin, setIsAdmin] = useState("");
   useEffect(() => {
+    if (!userData) {
+      return
+    }
     setIsAdmin(userData.adminMode)
   }, [userData])
 
@@ -86,6 +90,15 @@ function App() {
           />
         </Routes>
       </div>
+
+      {isAuth && !cbtMode && (
+        <Footer
+          setIsAuth={setIsAuth}
+          userData={userData}
+          isAuth={isAuth}
+          cbtMode={cbtMode}
+        />
+      )}
     </div>
   );
 }

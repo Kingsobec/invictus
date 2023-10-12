@@ -1,4 +1,11 @@
-import { QuerySnapshot, addDoc, collection, doc, getDocs, setDoc } from "firebase/firestore";
+import {
+  QuerySnapshot,
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+} from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../../firebase-config";
@@ -26,17 +33,17 @@ const Dashboard = ({
   const [optionB, setOptionB] = useState("");
   const [optionC, setOptionC] = useState("");
   const [optionD, setOptionD] = useState("");
-  const [answer, setAnswer] = useState(0)
-  const [ptiQuestions, setptiQuestions] = useState()
-  const [pchQuestions, setpchQuestions] = useState()
-  const [pcgQuestions, setpcgQuestions] = useState()
-  const [pctQuestions, setpctQuestions] = useState()
+  const [answer, setAnswer] = useState(0);
+  const [ptiQuestions, setptiQuestions] = useState();
+  const [pchQuestions, setpchQuestions] = useState();
+  const [pcgQuestions, setpcgQuestions] = useState();
+  const [pctQuestions, setpctQuestions] = useState();
   useEffect(() => {
     setptiQuestions(JSON.parse(localStorage.getItem("ptiQuestions")));
     setpchQuestions(JSON.parse(localStorage.getItem("pchQuestions")));
     setpcgQuestions(JSON.parse(localStorage.getItem("pcgQuestions")));
     setpctQuestions(JSON.parse(localStorage.getItem("pctQuestions")));
-  }, [])
+  }, []);
   const addQuestion = async (
     question,
     optionA,
@@ -47,8 +54,8 @@ const Dashboard = ({
     subject
   ) => {
     if (!question || !optionA || !optionB || !optionC || !optionD || !answer) {
-      alert("Please make sure you fill all the details and select the answer")
-      return
+      alert("Please make sure you fill all the details and select the answer");
+      return;
     }
     const data = {
       question: question,
@@ -63,12 +70,12 @@ const Dashboard = ({
 
     try {
       await addDoc(collection(db, subject), data);
-      setQuestion("")
-      setOptionA("")
-      setOptionB("")
-      setOptionC("")
-      setOptionD("")
-      setAnswer(0)
+      setQuestion("");
+      setOptionA("");
+      setOptionB("");
+      setOptionC("");
+      setOptionD("");
+      setAnswer(0);
     } catch (error) {
       alert(error);
     }
@@ -82,7 +89,7 @@ const Dashboard = ({
     try {
       const datas = await getDocs(collection(db, "PCG 341"));
       const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
-      localStorage.setItem("pcgQuestions", JSON.stringify(questionData))
+      localStorage.setItem("pcgQuestions", JSON.stringify(questionData));
       // setQuestions(datas.docs.map((doc) => ({ ...doc.data() })));
     } catch (error) {
       console.error("Error getting questions:", error);
@@ -92,7 +99,7 @@ const Dashboard = ({
     try {
       const datas = await getDocs(collection(db, "PCH 331"));
       const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
-      localStorage.setItem("pchQuestions", JSON.stringify(questionData))
+      localStorage.setItem("pchQuestions", JSON.stringify(questionData));
     } catch (error) {
       console.error("Error getting questions:", error);
     }
@@ -101,7 +108,7 @@ const Dashboard = ({
     try {
       const datas = await getDocs(collection(db, "PCT 321"));
       const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
-      localStorage.setItem("pctQuestions", JSON.stringify(questionData))
+      localStorage.setItem("pctQuestions", JSON.stringify(questionData));
     } catch (error) {
       console.error("Error getting questions:", error);
     }
@@ -110,15 +117,23 @@ const Dashboard = ({
     try {
       const datas = await getDocs(collection(db, "PTI 311"));
       const questionData = datas.docs.map((doc) => ({ ...doc.data() }));
-      localStorage.setItem("ptiQuestions", JSON.stringify(questionData))
+      localStorage.setItem("ptiQuestions", JSON.stringify(questionData));
     } catch (error) {
       console.error("Error getting questions:", error);
     }
   };
   useEffect(() => {
-    getPTI()
-    getPCT()
-    getPCH()
+    if (
+      localStorage.getItem("pcgQuestions") ||
+      localStorage.getItem("pctQuestions") ||
+      localStorage.getItem("pchQuestions") ||
+      localStorage.getItem("ptiQuestions")
+    ) {
+      return;
+    }
+    getPTI();
+    getPCT();
+    getPCH();
     getPCG();
   }, []);
 
@@ -163,6 +178,7 @@ const Dashboard = ({
   const PCH = userData.PCH;
   const PCG = userData.PCG;
   const PCL = userData.PCL;
+  setIsAdmin(userData.adminMode);
 
   const [courses, setCourses] = useState([
     {
@@ -192,19 +208,19 @@ const Dashboard = ({
     setTimes((totalQuestion * 45) / 60);
   };
   const putQuestions = (course) => {
-  if (course == "PTI 311") {
-    setQuestions(ptiQuestions);
-  }
-  if (course == "PCT 321") {
-    setQuestions(pctQuestions);
-  }
-  if (course == "PCH 331") {
-    setQuestions(pchQuestions);
-  }
-  if (course == "PCG 341") {
-    setQuestions(pcgQuestions);
-  }
-}
+    if (course == "PTI 311") {
+      setQuestions(ptiQuestions);
+    }
+    if (course == "PCT 321") {
+      setQuestions(pctQuestions);
+    }
+    if (course == "PCH 331") {
+      setQuestions(pchQuestions);
+    }
+    if (course == "PCG 341") {
+      setQuestions(pcgQuestions);
+    }
+  };
   const startExam = () => {
     if (totalQuestion) {
       navigate("/cbt-mode");
@@ -257,8 +273,8 @@ const Dashboard = ({
                     <div
                       className="flex justify-between w-full p-2 bg-white rounded-md my-4 hover:bg-green-900 trans text-green-900 font-bold text-[1.2rem] hover:text-white"
                       onClick={() => {
-                        start(index)
-                        putQuestions(each.course)
+                        start(index);
+                        putQuestions(each.course);
                       }}
                     >
                       <p className="">{each.course}</p>
@@ -352,9 +368,9 @@ const Dashboard = ({
                               value={totalQuestion}
                               onChange={(e) => {
                                 e.target.value >= 1 &&
-                                  e.target.value <= 100 &&
+                                  e.target.value <= 30 &&
                                   setTotalQuestion(e.target.value);
-                                e.target.value >= 100 && setTotalQuestion(100);
+                                e.target.value >= 30 && setTotalQuestion(30);
                                 e.target.value <= 0 && setTotalQuestion("");
 
                                 calculateTime();
