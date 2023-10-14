@@ -178,7 +178,7 @@ const Dashboard = ({
   const PCH = userData.PCH;
   const PCG = userData.PCG;
   const PCL = userData.PCL;
-  setIsAdmin(userData.adminMode);
+  // setIsAdmin(userData.adminMode);
 
   const [courses, setCourses] = useState([
     {
