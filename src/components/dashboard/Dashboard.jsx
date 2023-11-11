@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -144,7 +145,12 @@ const Dashboard = ({
         const querySnapshot = await getDocs(usersCollectionRef);
 
         if (!querySnapshot.empty) {
-          const userDataArray = querySnapshot.docs.map((doc) => doc.data());
+          const userDataArray = querySnapshot.docs.map((doc) => {
+            return {
+              uid: doc.id,
+              ...doc.data(),
+            };
+          });
           setUsers(
             userDataArray.sort((a, b) => {
               const nameA = a.fullName.toLowerCase();
@@ -155,7 +161,6 @@ const Dashboard = ({
               return 0;
             })
           );
-          // console.log(userDataArray);
         } else {
           console.log("No user data found");
         }
@@ -163,9 +168,18 @@ const Dashboard = ({
         console.error("Error getting all users data:", error);
       }
     };
-
     getAllUsersData();
   }, []);
+  const makeAdmin = async (uid, adminValue) => {
+    const userDocRef = doc(db, "users", uid);
+    try {
+      await updateDoc(userDocRef, {
+        adminMode: !adminValue,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const nickname = userData.displayName;
   const displayPhoto = userData.photoURL;
@@ -204,8 +218,8 @@ const Dashboard = ({
   ]);
 
   const calculateTime = () => {
-    setTime(totalQuestion * 45);
-    setTimes((totalQuestion * 45) / 60);
+    setTime(totalQuestion * 30);
+    setTimes((totalQuestion * 30) / 60);
   };
   const putQuestions = (course) => {
     if (course == "PTI 311") {
@@ -255,7 +269,7 @@ const Dashboard = ({
           <img
             src={displayPhoto}
             alt=""
-            className=" w-[300px] h-[300px] md:w-[400px] md:h-[400px] object-cover object-center rounded-[10px] m-auto border-green-900 border-2"
+            className=" w-[300px] h-[300px] md:w-[300px] md:h-[300px] object-cover object-center rounded-[10px] m-auto border-green-900 border-2"
           />
           <p className="">{fullName}</p>
           <p className="">{regNumber}</p>
@@ -367,12 +381,12 @@ const Dashboard = ({
                               type="number"
                               value={totalQuestion}
                               onChange={(e) => {
+                                console.log(questions.length);
                                 e.target.value >= 1 &&
                                   e.target.value <= 30 &&
                                   setTotalQuestion(e.target.value);
                                 e.target.value >= 30 && setTotalQuestion(30);
                                 e.target.value <= 0 && setTotalQuestion("");
-
                                 calculateTime();
                               }}
                               name="questionNumber"
@@ -415,9 +429,17 @@ const Dashboard = ({
                       className="w-[60px] h-[60px] object-cover rounded-full"
                     />
                   )}
-                  <p className="font-semibold text-green-900 md:text-[1.1rem]">
-                    {each.fullName} <br /> {each.regNumber}
-                  </p>
+                  <div className="flex justify-between items-center w-[85%]">
+                    <p className="font-semibold text-green-900 md:text-[1.1rem]">
+                      {each.fullName} <br /> {each.regNumber}
+                    </p>
+                    <p
+                      className={`${
+                        each.adminMode ? "bg-green-700" : " bg-red-700"
+                      } p-2 rounded-full cursor-pointer`}
+                      onClick={() => makeAdmin(each.uid, each.adminMode)}
+                    ></p>
+                  </div>
                 </div>
                 <div className="flex md:gap-2 gap-1 text-center font-semibold md:text-[1.1rem] justify-center">
                   <p className="border border-green-900 rounded-md px-2 ">

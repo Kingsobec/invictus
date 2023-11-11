@@ -31,7 +31,7 @@ export const storageRef = getStorage(app)
 
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    console.log("Session persistence set successfully.");
+    // console.log("Session persistence set successfully.");
   })
   .catch((error) => {
     console.error("Error setting session persistence:", error);

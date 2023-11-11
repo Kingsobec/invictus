@@ -49,33 +49,43 @@ const Cbt = ({
     );
     setScore(correctAnswers.length);
     setShowScore(true);
-    updateHistory()
+    updateHistory();
   };
 
-const updateHistory = async () => {
-  const user = auth.currentUser;
-  const userRef = doc(db, "users", user.uid);
+  const updateHistory = async () => {
+    const user = auth.currentUser;
+    const userRef = doc(db, "users", user.uid);
 
-  if (score > userData.PTI && whichCourse === "PTI 311") {
-    await updateDoc(userRef, { PTI: Math.floor((score/totalQuestion) * 100) });
-  }
+    if (score > userData.PTI && whichCourse === "PTI 311") {
+      await updateDoc(userRef, {
+        PTI: Math.floor((score / totalQuestion) * 100),
+      });
+    }
 
-  if (score > userData.PCT && whichCourse === "PCT 321") {
-    await updateDoc(userRef, { PCT: Math.floor((score/totalQuestion) * 100) });
-  }
+    if (score > userData.PCT && whichCourse === "PCT 321") {
+      await updateDoc(userRef, {
+        PCT: Math.floor((score / totalQuestion) * 100),
+      });
+    }
 
-  if (score > userData.PCH && whichCourse === "PCH 331") {
-    await updateDoc(userRef, { PCH: Math.floor((score/totalQuestion) * 100) });
-  }
+    if (score > userData.PCH && whichCourse === "PCH 331") {
+      await updateDoc(userRef, {
+        PCH: Math.floor((score / totalQuestion) * 100),
+      });
+    }
 
-  if (score > userData.PCG && whichCourse === "PCG 341") {
-    await updateDoc(userRef, { PCG: Math.floor((score/totalQuestion) * 100) });
-  }
+    if (score > userData.PCG && whichCourse === "PCG 341") {
+      await updateDoc(userRef, {
+        PCG: Math.floor((score / totalQuestion) * 100),
+      });
+    }
 
-  if (score > userData.PCL && whichCourse === "PCL 351") {
-    await updateDoc(userRef, { PCL: Math.floor((score/totalQuestion) * 100) });
-  }
-};
+    if (score > userData.PCL && whichCourse === "PCL 351") {
+      await updateDoc(userRef, {
+        PCL: Math.floor((score / totalQuestion) * 100),
+      });
+    }
+  };
 
   const handleOptionChange = (index, num) => {
     if (showResult) {
@@ -369,10 +379,10 @@ const updateHistory = async () => {
                     } ${
                       showResult &&
                       each.answer === each.picked &&
-                      " bg-green-900"
+                      " bg-green-800 text-white font-bold"
                     } ${
-                      showResult && each.answer !== each.picked && "bg-red-700"
-                    }`}
+                      showResult && each.answer !== each.picked && "bg-red-600"
+                    } ${index + 1 > totalQuestion && "hidden"}`}
                     onClick={() => {
                       setQuestionToDisplay(index);
                       countAnswers();

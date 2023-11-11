@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import React from "react";
 import Login from "./components/auth/Login";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/common/Navbar";
 import Dashboard from "./components/dashboard/Dashboard";
 import ExamList from "./components/dashboard/ExamList";
@@ -15,7 +14,7 @@ function App() {
   const [cbtMode, setCbtMode] = useState(false);
   const [time, setTime] = useState(0);
   const [totalQuestion, setTotalQuestion] = useState('');
-  const [questions, setQuestions] = useState([{}]);
+  const [questions, setQuestions] = useState([{},{}]);
   const [whichCourse, setWhichCourse] = useState("");
   const [isAdmin, setIsAdmin] = useState("");
   useEffect(() => {
